@@ -9,4 +9,3 @@ web/
 .metadata
 pubspec.lock
 .DS_Store
-package-lock.json
