@@ -1,0 +1,11 @@
+node_modules/
+android/
+ios/
+linux/
+macos/
+windows/
+web/
+.env
+.metadata
+pubspec.lock
+.DS_Store
