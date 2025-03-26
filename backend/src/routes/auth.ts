@@ -6,7 +6,6 @@ import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 const authRouter = Router();
-
 interface SignUpBody {
   name: string;
   email: string;
@@ -64,18 +63,45 @@ authRouter.post(
         res.status(400).json({ error: "Incorrect Password!" });
         return;
       }
+      console.log(process.env.JWT_KEY);
+      const token = jwt.sign({ id: existingUser.id }, "password_key");
 
-      const token = jwt.sign({ id: existingUser.id }, "passwordKey");
-    
-      res.status(200).json({token, ...existingUser});
+      res.status(200).json({ token, ...existingUser });
     } catch (error) {
       res.status(500).json({ error: error });
     }
   }
 );
 
+authRouter.post("/tokenIsValid", async (req, res) => {
+  try {
+    const token = req.header("x-auth-token");
+    if (!token) {
+      res.json(false);
+      return;
+    }
+    const verified = jwt.verify(token, "password_key");
 
+    if (!verified) {
+      res.json(false);
+      return;
+    }
 
+    const verifiedToken = verified as { id: string };
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, verifiedToken.id));
+
+    if (!user) {
+      res.json(false);
+      return;
+    }
+    res.json(true);
+  } catch (e) {
+    res.json(false);
+  }
+});
 
 authRouter.get("/", (req, res) => {
   res.send("Hey there! from auth");
