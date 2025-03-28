@@ -28,20 +28,17 @@ export const auth = async (
       return;
     }
 
-    const verifiedToken = verified as { id: UUID };
-    const [user] = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, verifiedToken.id));
+    const userId = verified as { id: UUID };
+    const [user] = await db.select().from(users).where(eq(users.id, userId.id));
 
     if (!user) {
       res.status(401).json({ error: "User not found!" });
       return;
     }
-    req.user = verifiedToken.id;
+    req.user = userId.id;
     req.token = token;
     next();
   } catch (e) {
-    res.status(500).json(false);
+    res.status(500).json("error: " + e);
   }
 };

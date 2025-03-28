@@ -120,6 +120,8 @@ authRouter.get("/", auth, async (req: AuthRequest, res) => {
 
     const [user] = await db.select().from(users).where(eq(users.id, req.user));
     res.json({ ...user, token: req.token });
-  } catch (error) {}
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
 });
 export default authRouter;
