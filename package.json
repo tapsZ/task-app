@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "drizzle-kit": "^0.30.5"
+  },
+  "dependencies": {
+    "cors": "^2.8.5"
   }
 }
